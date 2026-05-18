@@ -1,7 +1,10 @@
 package com.playground.backend.config;
 
 import java.io.IOException;
+import java.util.Collections;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.playground.backend.util.JwtUtil;
@@ -26,6 +29,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
             try {
                 String username = JwtUtil.extractUsername(token);
+
+                // Creates a Spring Security authentication object
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(
+                                username,
+                                null,
+                                Collections.emptyList()
+                        );
+
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                 System.out.println("Authencticated user: " + username);
 

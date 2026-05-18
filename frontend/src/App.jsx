@@ -2,16 +2,20 @@
 //import reactLogo from './assets/react.svg'
 //import viteLogo from './assets/vite.svg'
 //import heroImg from './assets/hero.png'
-import './App.css'
-import { useEffect } from "react";
-import { getHello } from "./services/api";
+import "./App.css";
+import { useEffect, useState } from "react";
+import Login from "./pages/Login/Login";
+import Signup from "./pages/Signup/Signup";
 
 function App() {
-  useEffect(() => {
-    getHello().then(console.log)
-  }, [])
 
-  return <h1>React App</h1>
+  const [isNew, setIsNew] = useState(true);
+
+  return isNew ? 
+    <Signup goToLogIn={() => setIsNew(false)}/>
+    :
+    <Login goToSignUp={() => setIsNew(true)}/>;
+
 
   /*const [count, setCount] = useState(0)
 

@@ -1,0 +1,11 @@
+.login-card {
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: auto;
+    border: none;
+    border-radius: 4px;
+    background-color: #9AA484;
+    margin-top: 50px;
+}
