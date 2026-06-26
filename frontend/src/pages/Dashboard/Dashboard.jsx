@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../../services/api";
+import Navbar from "../../components/Navbar";
 
 export default function Dashboard() {
   const [username, setUsername] = useState("");
@@ -23,8 +24,11 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <h1>
-        Hi {username}!
-    </h1>
+    <div>
+      <Navbar></Navbar>
+      <h1>
+          Hi {username}!
+      </h1>
+    </div>
   ) 
 }
