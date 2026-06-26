@@ -7,6 +7,9 @@
     padding: 10px 5px;
     width: 100%;
     box-sizing: border-box;
+    background-color: black;
+    caret-color: white;
+    color: white;
 }
 
 .input-field:focus-visible {

@@ -20,7 +20,7 @@ export async function register(username, password) {
         body: JSON.stringify({ username, password }),
     });
 
-    return response.text();
+    return response;
 }
 
 export async function login(username, password) {
@@ -32,5 +32,5 @@ export async function login(username, password) {
         body: JSON.stringify({ username, password }),
     });
 
-    return response.text();
+    return response;
 }

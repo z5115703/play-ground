@@ -1,35 +1,50 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../../services/api";
 import Button from "../../components/Button/Button";
 import InputField from "../../components/InputField/InputField";
 import "./Login.css";
 
-export default function Login({ goToSignUp }) {
+export default function Login() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-        const response = await API.post("/login", {
-            username,
-            password,
-        });
+      setError("");
+      const response = await API.post("/login", {
+          username,
+          password,
+      });
 
-        console.log("Token: ", response.data);
-        localStorage.setItem("token", response.data);
+      if (response.status === 200) {
+        console.log("Token: ", response.data.data);
+        localStorage.setItem("token", response.data.data);
+
+        navigate("/dashboard");
+      }
 
     } catch (err) {
-        console.log("Login failed", err);
+      if (err.response?.status === 401) {
+        console.log(err.response);
+        setError("Invalid password");
+      } else if (err.response?.status === 404) {
+        setError("User not found")
+      } else {
+        setError("Something went wrong.");
+      }
     }
   };
 
   return (
-    <div>
-      <h1>Log In</h1>
-      <form onSubmit={handleLogin}>
-        <div className="login-card">
+    <div className="login-page">
+      <div className="login-container"> 
+        <h1>Log In</h1>    
+        <form onSubmit={handleLogin} className={error ? "error" : ""}>
           <InputField
             type="text"
             placeholder="Enter your username"
@@ -42,10 +57,11 @@ export default function Login({ goToSignUp }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button label="Log In" onClick={handleLogin} type="submit"/>
-        </div>        
-      </form>
-      <button onClick={goToSignUp}>Sign Up</button>
-    </div>
+          {error && <div className="error-message">{error}</div>}
+          <Button label="Log In" type="submit"/>
+        </form>    
+        <button className="text-button" type="button" onClick={() => navigate("/signup")}>Create an account?</button>
+      </div>
+    </div>    
   );
 }

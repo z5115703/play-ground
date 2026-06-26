@@ -6,6 +6,9 @@
     min-height: 40px;
     font-size: 16px;
     color: white;
-    background-color: #7D6B4A;
+    background-color: #8B5CF6;
     cursor: pointer;
+}
+.button:hover {
+  background: #7C3AED;
 }
