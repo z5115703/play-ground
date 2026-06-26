@@ -1,8 +1,11 @@
 package com.playground.backend.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,16 +29,16 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
 
         if (userRepository.existsByUsername(user.getUsername())) {
-            return "Username already exists";
+            return ResponseEntity.status(409).body(new ApiResponse<>("Username already exists", null));
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         
-        return "User registered successfully";
+        return ResponseEntity.ok(new ApiResponse<>("User registered successfully", null));
     }
 
     @PostMapping("/login")
@@ -54,5 +57,14 @@ public class AuthController {
         String token = JwtUtil.generateToken(existingUser.getUsername());
 
         return ResponseEntity.ok(new ApiResponse<>("Login successful", token));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = auth.getName();
+
+        return ResponseEntity.ok(username);
     }
 }
