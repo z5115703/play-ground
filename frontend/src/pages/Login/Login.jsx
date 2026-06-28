@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import API from "../../services/api";
 import Button from "../../components/Button/Button";
 import InputField from "../../components/InputField/InputField";
-import "./Login.css";
+import "../../styles/style.css";
+import { login } from "../../services/auth";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,6 +17,12 @@ export default function Login() {
 
     try {
       setError("");
+
+      if (!username || !password) {
+        setError("All fields are required.");
+        return;
+      }
+
       const response = await API.post("/login", {
           username,
           password,
@@ -23,7 +30,7 @@ export default function Login() {
 
       if (response.status === 200) {
         console.log("Token: ", response.data.data);
-        localStorage.setItem("token", response.data.data);
+        login(response.data.data);
 
         navigate("/dashboard");
       }
@@ -41,8 +48,8 @@ export default function Login() {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-container"> 
+    <div className="page">
+      <div className="card-container"> 
         <h1>Log In</h1>    
         <form onSubmit={handleLogin} className={error ? "error" : ""}>
           <InputField

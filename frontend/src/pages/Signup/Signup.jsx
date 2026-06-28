@@ -16,6 +16,12 @@ export default function Signup() {
 
     try {
       setError("");
+
+      if (!name || !username || !password) {
+        setError("All fields are required.");
+        return;
+      }
+
       const response = await API.post("/register", {
           username,
           password,
@@ -36,8 +42,8 @@ export default function Signup() {
   }
 
   return (
-    <div className="login-page">
-      <div className="login-container">
+    <div className="page">
+      <div className="card-container">
         <h1>Sign Up</h1>
         <form onSubmit={handleRegister} className={error ? "error" : ""}>
           <div>
