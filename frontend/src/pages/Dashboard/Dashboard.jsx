@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../services/api";
 import Navbar from "../../components/Navbar";
+import Button from "../../components/Button/Button";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
 
   useEffect(() => {
@@ -16,7 +18,8 @@ export default function Dashboard() {
             Authorization: `Bearer ${token}`,
           },
         });
-        setUsername(response.data);
+        setName(response.data.name);
+        setUsername(response.data.username);
       } catch (error) {
         if (error.response?.status === 401) {
           navigate("/login");
@@ -31,8 +34,11 @@ export default function Dashboard() {
     <div>
       <Navbar/>
       <h1>
-          Hi {username}!
+          Hi {name}!
       </h1>
+      <div>
+        {username}
+      </div>
     </div>
   ) 
 }

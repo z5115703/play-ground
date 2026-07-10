@@ -29,8 +29,7 @@ export default function Login() {
       });
 
       if (response.status === 200) {
-        console.log("Token: ", response.data.data);
-        login(response.data.data);
+        login(response.data.token);
 
         navigate("/dashboard");
       }

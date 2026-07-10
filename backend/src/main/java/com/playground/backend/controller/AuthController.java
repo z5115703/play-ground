@@ -1,9 +1,7 @@
 package com.playground.backend.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,60 +9,49 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.playground.backend.dto.ApiResponse;
+import com.playground.backend.dto.LoginResult;
 import com.playground.backend.model.User;
-import com.playground.backend.repository.UserRepository;
-import com.playground.backend.util.JwtUtil;
+import com.playground.backend.service.AuthService;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final AuthService authService;
 
-    public AuthController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-
-        if (userRepository.existsByUsername(user.getUsername())) {
-            return ResponseEntity.status(409).body(new ApiResponse<>("Username already exists", null));
+        boolean registerResult = authService.register(user);
+        if (registerResult) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        
-        return ResponseEntity.ok(new ApiResponse<>("User registered successfully", null));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User user) {
-
-        User existingUser = userRepository.findByUsername(user.getUsername());
-
-        if(existingUser == null) {
-            return ResponseEntity.status(404).body(new ApiResponse<>("User not found", null));
+        LoginResult result = authService.login(user);
+        switch (result.getStatus()) {
+            case USER_NOT_FOUND:
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            case INVALID_PASSWORD:
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            case SUCCESS:
+                return ResponseEntity.ok(result);
         }
-
-        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            return ResponseEntity.status(401).body(new ApiResponse<>("Invalid password", null));
-        }
-
-        String token = JwtUtil.generateToken(existingUser.getUsername());
-
-        return ResponseEntity.ok(new ApiResponse<>("Login successful", token));
+        throw new IllegalStateException("Unexpected login status");
     }
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = authService.getCurrentUser();  
 
-        String username = auth.getName();
-
-        return ResponseEntity.ok(username);
+        return ResponseEntity.ok(user);
     }
 }
