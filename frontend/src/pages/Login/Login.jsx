@@ -4,13 +4,14 @@ import API from "../../services/api";
 import Button from "../../components/Button/Button";
 import InputField from "../../components/InputField/InputField";
 import "../../styles/style.css";
-import { login } from "../../services/auth";
+import { useAuth } from "../../context/useAuth"
 
 export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,11 +29,8 @@ export default function Login() {
           password,
       });
 
-      if (response.status === 200) {
-        login(response.data.token);
-
-        navigate("/dashboard");
-      }
+      login(response.data.token);
+      navigate("/dashboard");
 
     } catch (err) {
       if (err.response?.status === 401) {
