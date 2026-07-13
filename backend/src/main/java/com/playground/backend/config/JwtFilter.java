@@ -28,19 +28,19 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             try {
-                String username = JwtUtil.extractUsername(token);
+                String subject = JwtUtil.extractSubject(token);
 
                 // Creates a Spring Security authentication object
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
-                                username,
+                                subject,
                                 null,
                                 Collections.emptyList()
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                System.out.println("Authencticated user: " + username);
+                System.out.println("Authencticated user: " + subject);
 
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

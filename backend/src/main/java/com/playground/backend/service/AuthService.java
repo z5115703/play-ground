@@ -45,14 +45,16 @@ public class AuthService {
             return new LoginResult(LoginStatus.INVALID_PASSWORD, null);
         }
 
-        String token = JwtUtil.generateToken(existingUser.getUsername());
+        //String token = JwtUtil.generateToken(existingUser.getUsername());
+        String token = JwtUtil.generateToken(String.valueOf(existingUser.getId()));
         return new LoginResult(LoginStatus.SUCCESS, token);
     }
 
     public User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        Long userId = Long.valueOf(auth.getName());
 
-        return userRepository.findByUsername(username);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

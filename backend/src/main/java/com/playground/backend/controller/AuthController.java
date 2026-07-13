@@ -38,12 +38,15 @@ public class AuthController {
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         LoginResult result = authService.login(user);
         switch (result.getStatus()) {
-            case USER_NOT_FOUND:
+            case USER_NOT_FOUND -> {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            case INVALID_PASSWORD:
+            }
+            case INVALID_PASSWORD -> {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            case SUCCESS:
+            }
+            case SUCCESS -> {
                 return ResponseEntity.ok(result);
+            }
         }
         throw new IllegalStateException("Unexpected login status");
     }

@@ -14,16 +14,16 @@ public class JwtUtil {
                 "SkdmlDjacjdRlekfksQlalfDufthl0110121728".getBytes()
             );
 
-    public static String generateToken(String username) {
+    public static String generateToken(String userIdString) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userIdString)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(SECRET_KEY)
                 .compact();
     }
 
-    public static String extractUsername(String token) {
+    public static String extractSubject(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
