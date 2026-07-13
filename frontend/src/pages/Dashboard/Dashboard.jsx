@@ -28,7 +28,7 @@ export default function Dashboard() {
       }   
     };
     fetchUser();
-  }, [navigate, token]);
+  }, [navigate, token, logout]);
 
   return (
     <div>

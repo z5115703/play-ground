@@ -1,5 +1,5 @@
 import { useAuth } from "../context/useAuth";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Button from "./Button/Button";
 
 function Navbar() {
@@ -14,6 +14,14 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div>Play Ground</div>
+      <ul className="navbar-links">
+        <li>
+          <NavLink to="/dashboard">Dashboard</NavLink>
+        </li>
+        <li>
+          <NavLink to="/account">Account Settings</NavLink>
+        </li>       
+      </ul>     
       <Button label="Logout" onClick={handleLogout} />
     </nav>
   );

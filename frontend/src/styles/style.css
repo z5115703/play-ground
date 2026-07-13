@@ -47,5 +47,17 @@ h1 {
 .navbar {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 30px;
+}
+.navbar-links {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+}
+.navbar-links > li {
+    list-style-type: none;
+}
+.navbar-links > li > a {
+    text-decoration: none;
 }
