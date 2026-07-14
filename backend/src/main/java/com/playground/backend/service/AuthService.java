@@ -5,8 +5,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.playground.backend.dto.LoginRequest;
 import com.playground.backend.dto.LoginResult;
 import com.playground.backend.dto.LoginStatus;
+import com.playground.backend.dto.SignupRequest;
 import com.playground.backend.model.User;
 import com.playground.backend.repository.UserRepository;
 import com.playground.backend.util.JwtUtil;
@@ -23,25 +25,25 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean register(User user) {
-        if (userRepository.existsByUsername(user.getUsername())) {
+    public boolean register(SignupRequest request) {
+        if (userRepository.existsByUsername(request.username())) {
             return false;
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = new User(request.name(), request.username(), passwordEncoder.encode(request.password()));
         userRepository.save(user);
 
         return true;
     }
 
-    public LoginResult login(User user) {
-        User existingUser = userRepository.findByUsername(user.getUsername());
+    public LoginResult login(LoginRequest request) {
+        User existingUser = userRepository.findByUsername(request.username());
 
         if(existingUser == null) {
             return new LoginResult(LoginStatus.USER_NOT_FOUND, null);
         }
 
-        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), existingUser.getPassword())) {
             return new LoginResult(LoginStatus.INVALID_PASSWORD, null);
         }
 

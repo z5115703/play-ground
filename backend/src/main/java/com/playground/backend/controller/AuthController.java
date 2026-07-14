@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.playground.backend.dto.LoginRequest;
 import com.playground.backend.dto.LoginResult;
+import com.playground.backend.dto.SignupRequest;
 import com.playground.backend.model.User;
 import com.playground.backend.service.AuthService;
 
@@ -25,18 +27,18 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        boolean registerResult = authService.register(user);
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequest request) {
+        boolean registerResult = authService.register(request);
         if (registerResult) {
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(request);
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody User user) {
-        LoginResult result = authService.login(user);
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
+        LoginResult result = authService.login(request);
         switch (result.getStatus()) {
             case USER_NOT_FOUND -> {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
