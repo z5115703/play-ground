@@ -9,6 +9,10 @@ import com.playground.backend.dto.LoginRequest;
 import com.playground.backend.dto.LoginResult;
 import com.playground.backend.dto.LoginStatus;
 import com.playground.backend.dto.SignupRequest;
+import com.playground.backend.dto.UpdateUserRequest;
+import com.playground.backend.dto.UpdateUserResult;
+import com.playground.backend.dto.UpdateUserStatus;
+import com.playground.backend.dto.UserResponse;
 import com.playground.backend.model.User;
 import com.playground.backend.repository.UserRepository;
 import com.playground.backend.util.JwtUtil;
@@ -58,5 +62,32 @@ public class AuthService {
 
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public UserResponse getCurrentUserResponse() {
+        User user = getCurrentUser();
+        return new UserResponse(user.getId(), user.getUsername(), user.getName());
+    }
+
+    public UpdateUserResult updateCurrentUser(UpdateUserRequest request) {
+        User user = getCurrentUser();
+
+        if(request.username() != null &&
+            !request.username().equals(user.getUsername()) && 
+            userRepository.existsByUsername(request.username())) {
+            return new UpdateUserResult(UpdateUserStatus.USERNAME_ALREADY_EXISTS, null);
+        }
+
+        if (request.name() != null) {
+            user.setName(request.name());
+        }
+        
+        if (request.username() != null) {
+           user.setUsername(request.username()); 
+        }
+        
+        userRepository.save(user);
+
+        return new UpdateUserResult(UpdateUserStatus.SUCCESS, new UserResponse(user.getId(), user.getUsername(), user.getName()));
     }
 }

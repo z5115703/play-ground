@@ -1,8 +1,8 @@
 package com.playground.backend.dto;
 
 public record UpdateUserRequest (
-  String name,
-  String username
+    String name,
+    String username
 ) {
 
 }

@@ -1,8 +1,9 @@
 package com.playground.backend.dto;
 
-public record LoginRequest(
+public record UserResponse(
+    Long id,
     String username,
-    String password
+    String name
 ) {
-  
+
 }

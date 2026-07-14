@@ -28,8 +28,7 @@ export default function Login() {
           username,
           password,
       });
-
-      login(response.data.token);
+      login(response.data);
       navigate("/dashboard");
 
     } catch (err) {

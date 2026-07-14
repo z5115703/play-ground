@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../../services/api";
 import { useAuth } from "../../context/useAuth";
 import Navbar from "../../components/Navbar";
+import { getCurrentUser } from "../../services/user";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -13,13 +13,9 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await API.get("/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setName(response.data.name);
-        setUsername(response.data.username);
+        const user = await getCurrentUser(token);
+        setName(user.name);
+        setUsername(user.username);
       } catch (error) {
         if (error.response?.status === 401) {
           logout();

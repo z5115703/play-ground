@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.playground.backend.dto.LoginRequest;
 import com.playground.backend.dto.LoginResult;
 import com.playground.backend.dto.SignupRequest;
-import com.playground.backend.model.User;
+import com.playground.backend.dto.UpdateUserRequest;
+import com.playground.backend.dto.UpdateUserResult;
 import com.playground.backend.service.AuthService;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -47,7 +49,7 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             case SUCCESS -> {
-                return ResponseEntity.ok(result);
+                return ResponseEntity.ok(result.getToken());
             }
         }
         throw new IllegalStateException("Unexpected login status");
@@ -55,8 +57,20 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
-        User user = authService.getCurrentUser();  
+        return ResponseEntity.ok(authService.getCurrentUserResponse());
+    }
 
-        return ResponseEntity.ok(user);
+    @PatchMapping("/me")
+    public ResponseEntity<?> updateCurrentUser(@RequestBody UpdateUserRequest request) {
+        UpdateUserResult result = authService.updateCurrentUser(request); 
+        switch (result.getStatus()) {
+            case USERNAME_ALREADY_EXISTS -> {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+            case SUCCESS -> {
+                return ResponseEntity.ok(result.getUserResponse());
+            }
+        }     
+        throw new IllegalStateException("Unexpected user update status");
     }
 }
