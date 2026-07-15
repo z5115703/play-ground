@@ -6,6 +6,10 @@ body {
     width: 100%;
 }
 .page {
+    padding: 0 100px;
+    text-align: left;
+}
+.login-page {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,10 +27,14 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    text-align: center;
+}
+.settings-container {
+    width: 500px;
 }
 h1 {
     margin: 0;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     font-size: 40px;
     color: white;
 }
@@ -44,20 +52,30 @@ h1 {
     margin-bottom: 15px;
     color: #F87171;
 }
+.success-message {
+    color: #16c60c;
+}
 .navbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 30px;
+    padding: 20px 30px;
+    margin-bottom: 32px;
+    background-color: #2e2e2e;
 }
 .navbar-links {
     display: flex;
     gap: 1rem;
     margin: 0;
+    margin-left: auto;
+    margin-right: 50px;
 }
 .navbar-links > li {
     list-style-type: none;
 }
 .navbar-links > li > a {
     text-decoration: none;
+}
+.full-width {
+    width: 100%;
+    margin-top: 10px;
 }

@@ -43,7 +43,7 @@ export default function Signup() {
   }
 
   return (
-    <div className="page">
+    <div className="page login-page">
       <div className="card-container">
         <h1>Sign Up</h1>
         <form onSubmit={handleRegister} className={error ? "error" : ""}>
@@ -67,7 +67,7 @@ export default function Signup() {
               onChange={(e) => setPassword(e.target.value)}
             />
             {error && <div className="error-message">{error}</div>}
-            <Button label="Sign Up" onClick={handleRegister} type="submit"/>
+            <Button className="full-width" label="Sign Up" onClick={handleRegister} type="submit"/>
           </div>        
         </form>
         <button className="text-button" onClick={() => navigate("/login")}>Already have an account?</button>

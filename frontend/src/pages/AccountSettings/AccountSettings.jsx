@@ -9,6 +9,7 @@ export default function AccountSettings() {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const { token, logout } = useAuth();
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function AccountSettings() {
       const user = await updateCurrentUser(token, { name, username });
       setName(user.name);
       setUsername(user.username);
+      setSuccess("Profile updated successfully ✔")
     } catch (error) {
       if (error.response?.status === 409) {
         setError("Username already exists");
@@ -43,17 +45,18 @@ export default function AccountSettings() {
 
   return (
     <div>
-      <Navbar/>
-      <h1>
-          Account Settings
-      </h1>
+      <Navbar/> 
       <div className="page">
-        <div className="card-container">
+        <h1>
+          Account Settings
+        </h1>
+        <div className="settings-container">
           <form onSubmit={handleSaveChanges}>
           <InputField label="Name" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
           <InputField label="Username" type="text" value={username} onChange={(e) => setUsername(e.target.value)}/>
           {error && <div className="error-message">{error}</div>}
-          <Button label="Save changes" type="submit"/>
+          {success && <div className="success-message">{success}</div>}
+          <Button className="full-width" label="Save changes" type="submit"/>
         </form>
         </div>
       </div>

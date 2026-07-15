@@ -44,7 +44,7 @@ export default function Login() {
   };
 
   return (
-    <div className="page">
+    <div className="page login-page">
       <div className="card-container"> 
         <h1>Log In</h1>    
         <form onSubmit={handleLogin} className={error ? "error" : ""}>
@@ -61,7 +61,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <div className="error-message">{error}</div>}
-          <Button label="Log In" type="submit"/>
+          <Button className="full-width" label="Log In" type="submit"/>
         </form>    
         <button className="text-button" type="button" onClick={() => navigate("/signup")}>Create an account?</button>
       </div>

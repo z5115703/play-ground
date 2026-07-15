@@ -29,12 +29,14 @@ export default function Dashboard() {
   return (
     <div>
       <Navbar/>
-      <h1>
-          Hi {name}!
-      </h1>
-      <div>
-        {username}
-      </div>
+      <div className="page">
+        <h1>
+          Hi {name} 👋
+        </h1>
+        <div>
+          @{username}
+        </div>
+      </div> 
     </div>
   ) 
 }
