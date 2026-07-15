@@ -19,3 +19,13 @@ export async function updateCurrentUser(token, user) {
 
   return response.data;
 }
+
+export async function changePassword(token, password) {
+  const response = await API.patch("/me/password", password, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}

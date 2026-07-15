@@ -3,6 +3,4 @@ package com.playground.backend.dto;
 public record LoginRequest(
     String username,
     String password
-) {
-  
-}
+) {}

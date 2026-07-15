@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.playground.backend.dto.ChangePasswordRequest;
+import com.playground.backend.dto.ChangePasswordResult;
 import com.playground.backend.dto.LoginRequest;
 import com.playground.backend.dto.LoginResult;
 import com.playground.backend.dto.SignupRequest;
@@ -72,5 +74,19 @@ public class AuthController {
             }
         }     
         throw new IllegalStateException("Unexpected user update status");
+    }
+
+    @PatchMapping("/me/password")
+    public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request) {
+        ChangePasswordResult result = authService.changePassword(request);
+        switch(result.getStatus()) {
+            case CURRENT_PASSWORD_INCORRECT -> {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            case SUCCESS -> {
+                return ResponseEntity.ok().build();
+            }
+        }
+        throw new IllegalStateException("Unexpected change password status");
     }
 }

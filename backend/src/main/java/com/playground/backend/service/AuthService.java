@@ -5,6 +5,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.playground.backend.dto.ChangePasswordRequest;
+import com.playground.backend.dto.ChangePasswordResult;
+import com.playground.backend.dto.ChangePasswordStatus;
 import com.playground.backend.dto.LoginRequest;
 import com.playground.backend.dto.LoginResult;
 import com.playground.backend.dto.LoginStatus;
@@ -89,5 +92,16 @@ public class AuthService {
         userRepository.save(user);
 
         return new UpdateUserResult(UpdateUserStatus.SUCCESS, new UserResponse(user.getId(), user.getUsername(), user.getName()));
+    }
+
+    public ChangePasswordResult changePassword(ChangePasswordRequest request) {
+        User user = getCurrentUser();
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
+            return new ChangePasswordResult(ChangePasswordStatus.CURRENT_PASSWORD_INCORRECT);
+        }
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+
+        return new ChangePasswordResult(ChangePasswordStatus.SUCCESS);
     }
 }
