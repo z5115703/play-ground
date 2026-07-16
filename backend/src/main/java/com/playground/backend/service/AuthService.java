@@ -1,7 +1,5 @@
 package com.playground.backend.service;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +24,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CurrentUserService currentUserService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, CurrentUserService currentUserService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.currentUserService = currentUserService;
     }
 
     public boolean register(SignupRequest request) {
@@ -46,7 +46,7 @@ public class AuthService {
     public LoginResult login(LoginRequest request) {
         User existingUser = userRepository.findByUsername(request.username());
 
-        if(existingUser == null) {
+        if (existingUser == null) {
             return new LoginResult(LoginStatus.USER_NOT_FOUND, null);
         }
 
@@ -60,11 +60,7 @@ public class AuthService {
     }
 
     public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = Long.valueOf(auth.getName());
-
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        return currentUserService.getCurrentUser();
     }
 
     public UserResponse getCurrentUserResponse() {
@@ -75,7 +71,7 @@ public class AuthService {
     public UpdateUserResult updateCurrentUser(UpdateUserRequest request) {
         User user = getCurrentUser();
 
-        if(request.username() != null &&
+        if (request.username() != null &&
             !request.username().equals(user.getUsername()) && 
             userRepository.existsByUsername(request.username())) {
             return new UpdateUserResult(UpdateUserStatus.USERNAME_ALREADY_EXISTS, null);
