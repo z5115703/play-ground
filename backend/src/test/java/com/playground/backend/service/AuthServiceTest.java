@@ -1,6 +1,7 @@
 package com.playground.backend.service;
 
 import java.lang.reflect.Field;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,6 +27,9 @@ import com.playground.backend.dto.LoginRequest;
 import com.playground.backend.dto.LoginResult;
 import com.playground.backend.dto.LoginStatus;
 import com.playground.backend.dto.SignupRequest;
+import com.playground.backend.dto.UpdateUserRequest;
+import com.playground.backend.dto.UpdateUserResult;
+import com.playground.backend.dto.UpdateUserStatus;
 import com.playground.backend.model.User;
 import com.playground.backend.repository.UserRepository;
 
@@ -140,6 +144,51 @@ class AuthServiceTest {
 
         verify(userRepository).findByUsername(request.username());
         verify(passwordEncoder).matches(request.password(), user.getPassword());
+    }
+
+    @Test
+    void updateCurrentUser_DuplicateUsername_ReturnsUsernameAlreadyExists() {
+        UpdateUserRequest request = new UpdateUserRequest("newName", "newUsername");
+        User user = new User("name", "username", "password");
+
+        when(currentUserService.getCurrentUser())
+                .thenReturn(user);
+
+        when(userRepository.existsByUsername(request.username()))
+                .thenReturn(true);
+        
+        UpdateUserResult result = authService.updateCurrentUser(request);
+
+        assertEquals(UpdateUserStatus.USERNAME_ALREADY_EXISTS, result.getStatus());
+        assertNull(result.getUserResponse());
+
+        verify(userRepository).existsByUsername(request.username());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void updateCurrentUser_ValidRequest_ReturnsSuccess() {
+        UpdateUserRequest request = new UpdateUserRequest("newName", "newUsername");
+        User user = createUser(1L, "name", "username", "password");
+
+        when(currentUserService.getCurrentUser())
+                .thenReturn(user);
+
+        when(userRepository.existsByUsername(request.username()))
+                .thenReturn(false);
+
+        UpdateUserResult result = authService.updateCurrentUser(request);
+
+        assertEquals(UpdateUserStatus.SUCCESS, result.getStatus());
+        assertNotNull(result.getUserResponse());
+        assertEquals(request.name(), user.getName());
+        assertEquals(request.username(), user.getUsername());
+        assertEquals(1L, result.getUserResponse().id());
+        assertEquals(request.name(), result.getUserResponse().name());
+        assertEquals(request.username(), result.getUserResponse().username());
+
+        verify(userRepository).existsByUsername(request.username());
+        verify(userRepository).save(user);
     }
 
     @Test
