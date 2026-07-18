@@ -17,6 +17,7 @@ import com.playground.backend.dto.LoginResult;
 import com.playground.backend.dto.SignupRequest;
 import com.playground.backend.dto.UpdateUserRequest;
 import com.playground.backend.dto.UpdateUserResult;
+import com.playground.backend.dto.UserResponse;
 import com.playground.backend.service.AuthService;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -31,17 +32,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest request) {
+    public ResponseEntity<Void> registerUser(@RequestBody SignupRequest request) {
         boolean registerResult = authService.register(request);
         if (registerResult) {
-            return ResponseEntity.ok(request);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest request) {
         LoginResult result = authService.login(request);
         switch (result.getStatus()) {
             case USER_NOT_FOUND -> {
@@ -58,12 +59,12 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser() {
+    public ResponseEntity<UserResponse> getCurrentUser() {
         return ResponseEntity.ok(authService.getCurrentUserResponse());
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<?> updateCurrentUser(@RequestBody UpdateUserRequest request) {
+    public ResponseEntity<UserResponse> updateCurrentUser(@RequestBody UpdateUserRequest request) {
         UpdateUserResult result = authService.updateCurrentUser(request); 
         switch (result.getStatus()) {
             case USERNAME_ALREADY_EXISTS -> {
@@ -77,7 +78,7 @@ public class AuthController {
     }
 
     @PatchMapping("/me/password")
-    public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<Void> updatePassword(@RequestBody ChangePasswordRequest request) {
         ChangePasswordResult result = authService.changePassword(request);
         switch(result.getStatus()) {
             case CURRENT_PASSWORD_INCORRECT -> {
