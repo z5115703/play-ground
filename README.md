@@ -1,28 +1,69 @@
 # My play ground project to play
 
 ## Project Overview
-This is a full-stack web application built using  using React (Vite) for the frontend and Spring Boot for the backend. 
+Playground is a full-stack web application built using Spring Boot and React (Vite).
 
-The goal of this project is to learn and implement a complete authentication system, including user registration, login, and secure API communication.
+This project was started to gain hands-on experience with technologies that were new to me while building something that I can continue to expand over time. The current implementation includes JWT-based authentication, user profile management, and a React frontend that supports these features.
 
----
-
-## Tech Stack
-- Frontend: React (Vite, JavaScript)
-- Backend: Spring Boot (Java)
-- Node.js for frontend tooling 
+Rather than creating a series of small practice projects, I wanted a single application where I could add new features, try different approaches, and improve the overall design as I learn more about the technologies I'm using.
 
 ---
 
-## Setup Notes
+## Features
 
-### Node.js
-Installed Node.js v24.15.0 on Windows
+### Authentication
+- User registration
+- User login
+- JWT-based authentication
+- Proteced API endpoints
 
-### Frontend setup
-Created with:
-npm create vite@latest frontend
-Variant: JavaScript + React
+### User Management
+- Retrieve the currently authenticated user
+- Update profile information
+- Change password
+- Username uniqueness validation
+
+### Security
+- Password hashing using BCrypt
+- JWT generation and validation
+- Spring Security authentication filter
+- Router protection using Spring Security
+
+### Testing
+- Unit testing using JUnit and Mockito
+- Controller testing using MockMvc
+- Service layer testing
+- Authentication flow testing
+- Business rule validation
+
+---
+
+## Technology Stack
+
+### Backend
+- Java 17
+- Spring Boot  
+- Spring Security  
+- Spring Data JPA 
+- JWT Authentication  
+
+### Frontend
+- JavaScript
+- React    
+- Vite
+- React Router
+- Axios
+
+### Database
+- H2
+
+### Testing
+- JUnit 5 
+- Mockito    
+- MockMvc   
+
+### Build Tool
+- Maven
 
 ---
 
@@ -44,10 +85,14 @@ mvnw spring-boot:run
 Bakcned runs on:
 http://localhost:8080
 
+---
+
 ## API Endpoints
 
-### Test Endpoint
-GET/api/hello
-
-Response:
-"Backend is working!"
+| Method | Endpoint            | Description                     |
+| ------ | ------------------- | ------------------------------- |
+| POST   | `/auth/register`    | Register a new user             |
+| POST   | `/auth/login`       | Authenticate a user             |
+| GET    | `/auth/me`          | Retrieve the authenticated user |
+| PATCH  | `/auth/me`          | Update user profile             |
+| PATCH  | `/auth/me/password` | Change password                 |
