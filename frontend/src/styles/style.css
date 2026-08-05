@@ -80,3 +80,13 @@ h1 {
     width: 100%;
     margin-top: 10px;
 }
+.dashboard-header {
+    display: flex;
+}
+.session-info {
+    margin-left: auto;
+}
+.session-time {
+    color: white;
+    font-size: 25px;
+}

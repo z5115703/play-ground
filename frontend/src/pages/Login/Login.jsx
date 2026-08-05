@@ -16,19 +16,19 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    if (!username || !password) {
+      setError("All fields are required.");
+      return;
+    }
+
     try {
       setError("");
-
-      if (!username || !password) {
-        setError("All fields are required.");
-        return;
-      }
-
       const response = await API.post("/login", {
           username,
           password,
       });
       login(response.data);
+      localStorage.setItem("loginTime", Date.now());
       navigate("/dashboard");
 
     } catch (err) {
@@ -41,6 +41,7 @@ export default function Login() {
         setError("Something went wrong.");
       }
     }
+    
   };
 
   return (

@@ -31,6 +31,26 @@ export default function AccountSettings() {
     fetchUser();
   }, [token, logout]);
 
+  useEffect(() => {
+    if (!profileSuccess) return;
+
+    const timer = setTimeout(() => {
+      setProfileSuccess("");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [profileSuccess]);
+
+  useEffect(() => {
+    if (!passwordSuccess) return;
+
+    const timer = setTimeout(() => {
+      setPasswordSuccess("");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [passwordSuccess]);
+
   const handleSaveChanges = async (e) => {
     e.preventDefault();
     try {
@@ -51,6 +71,12 @@ export default function AccountSettings() {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
+    
+    if (!currentPassword || !newPassword) {
+      setPasswordError("All fields are required");
+      return;
+    }
+
     try {
       await changePassword(token, { currentPassword, newPassword });
       setPasswordError("");
