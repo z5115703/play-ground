@@ -10,9 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -72,7 +70,7 @@ class AuthIntegrationTest {
 
     @Test
     void register_DuplicateUsername_ReturnsConflict() throws Exception {
-        User user = new User("name", "username", "password");
+        User user = new User("name", "username", passwordEncoder.encode("password"));
         userRepository.save(user);
 
         SignupRequest request = new SignupRequest("name", "username", "password");
@@ -93,7 +91,7 @@ class AuthIntegrationTest {
 
     @Test
     void login_ValidRequest_ReturnsOk() throws Exception {
-        User user = new User("name", "username", "password");
+        User user = new User("name", "username", passwordEncoder.encode("password"));
         userRepository.save(user);
 
         LoginRequest request = new LoginRequest("username", "password");
@@ -143,7 +141,7 @@ class AuthIntegrationTest {
 
     @Test
     void getCurrentUser_ValidJwt_ReturnsOk() throws Exception {
-        User user = new User("name", "username", "password");
+        User user = new User("name", "username", passwordEncoder.encode("password"));
         userRepository.save(user);
 
         String token = JwtUtil.generateToken(String.valueOf(user.getId()));
@@ -169,7 +167,7 @@ class AuthIntegrationTest {
 
     @Test
     void updateCurrentUser_ValidRequest_ReturnsOk() throws Exception {
-        User user = new User("name", "username", "password");
+        User user = new User("name", "username", passwordEncoder.encode("password"));
         userRepository.save(user);
 
         String token = JwtUtil.generateToken(String.valueOf(user.getId()));
@@ -194,7 +192,7 @@ class AuthIntegrationTest {
 
     @Test
     void updateCurrentUser_DuplicateUsername_ReturnsConflict() throws Exception {
-        User user = new User("name", "username", "password");
+        User user = new User("name", "username", passwordEncoder.encode("password"));
         userRepository.save(user);
         User duplicateUser = new User("duplicateName", "duplicateUser", "duplicatePassword");
         userRepository.save(duplicateUser);
