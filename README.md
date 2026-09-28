@@ -1,4 +1,3 @@
-# My play ground project to play
 
 ## Project Overview
 Playground is a full-stack web application built using Spring Boot and React (Vite).
